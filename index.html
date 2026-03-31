@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Code Slayer | QR Generator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <style>
+        body { background: radial-gradient(circle at top right, #0f172a, #1e293b); min-height: 100vh; font-family: 'Inter', sans-serif; }
+        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .btn-glow { background: linear-gradient(90deg, #38bdf8 0%, #818cf8 100%); transition: 0.3s; }
+        .btn-glow:hover { box-shadow: 0 0 20px rgba(56, 189, 248, 0.4); transform: translateY(-2px); }
+    </style>
+</head>
+<body class="flex flex-col items-center justify-center p-4">
+
+    <div class="glass animate__animated animate__fadeIn max-w-lg w-full p-10 rounded-3xl text-white shadow-2xl">
+        <header class="text-center mb-8">
+            <h1 class="text-4xl font-black tracking-tighter mb-2 italic text-transparent bg-clip-text bg-gradient-to-r from-sky-400 to-indigo-400">CODE SLAYER</h1>
+            <p class="text-slate-400 text-sm uppercase tracking-[0.2em]">Next-Gen QR Utility</p>
+        </header>
+
+        <div class="space-y-6">
+            <input type="text" id="userInput" placeholder="Enter link or secret message..." 
+                class="w-full p-4 rounded-xl bg-slate-800/50 border border-slate-700 focus:outline-none focus:border-sky-500 text-white placeholder-slate-500">
+            
+            <button onclick="generateQR()" class="w-full btn-glow text-white font-bold py-4 rounded-xl uppercase tracking-widest">
+                Generate QR
+            </button>
+        </div>
+
+        <div id="qrContainer" class="mt-10 flex flex-col items-center hidden">
+            <div class="bg-white p-4 rounded-2xl animate__animated animate__zoomIn">
+                <img id="qrImage" src="" alt="QR Code" class="w-48 h-48">
+            </div>
+            <button onclick="downloadQR()" class="mt-6 text-sky-400 hover:text-white text-sm font-medium transition-colors">
+                Download Image ↓
+            </button>
+        </div>
+
+        <footer class="mt-12 text-center border-t border-slate-800 pt-6">
+            <p class="text-xs text-slate-500 font-bold tracking-widest uppercase">Team: Code Slayer</p>
+            <p class="text-[10px] text-slate-600 mt-1">Sushila Devi Bansal College • CSE-DS</p>
+        </footer>
+    </div>
+
+    <script>
+        function generateQR() {
+            const input = document.getElementById('userInput').value;
+            const container = document.getElementById('qrContainer');
+            const img = document.getElementById('qrImage');
+            if (!input.trim()) return alert("Please enter data, Sir!");
+            img.src = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(input)}`;
+            container.classList.remove('hidden');
+        }
+
+        async function downloadQR() {
+            const img = document.getElementById('qrImage');
+            const response = await fetch(img.src);
+            const blob = await response.blob();
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'CodeSlayer_QR.png';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        }
+    </script>
+</body>
+</html>
